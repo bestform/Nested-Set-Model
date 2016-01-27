@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/awalterschulze/gographviz"
+	"github.com/awalterschulze/gographviz/parser"
+)
 
 type Node struct {
 	name        string
@@ -36,10 +41,38 @@ func (n *Node) appendNew(name string) *Node {
 }
 
 func (n Node) String() string {
-	output := fmt.Sprintf("%v (%v, %v)\n", n.name, n.left, n.right)
+	output := n.SimpleString()
 	for _, child := range n.children {
-		output += fmt.Sprint(child)
+		output += child.SimpleString()
 	}
+
+	return output
+}
+
+func (n Node) SimpleString() string {
+	return fmt.Sprintf("%v (%v, %v)\n", n.name, n.left, n.right)
+}
+
+func (n *Node) addToGraphViz(g *gographviz.Graph, parentGraph, parent string) {
+	nodeName := fmt.Sprintf("\"%v\"", n.SimpleString())
+	g.AddNode(parentGraph, nodeName, nil)
+	if "" != parent {
+		g.AddEdge(parent, nodeName, true, nil)
+	}
+
+	for _, child := range n.children {
+		child.addToGraphViz(g, parentGraph, nodeName)
+	}
+}
+
+func (n *Node) ToGraphViz() string {
+	graphAst, _ := parser.ParseString(`digraph NestedSet {}`)
+	graph := gographviz.NewGraph()
+	gographviz.Analyse(graphAst, graph)
+
+	n.addToGraphViz(graph, "NestedSet", "")
+
+	output := graph.String()
 
 	return output
 }
@@ -65,5 +98,6 @@ func main() {
 	womens.appendNew("Blouses")
 
 	clothing.Init()
-	fmt.Println(clothing)
+	//fmt.Println(clothing)
+	fmt.Println(clothing.ToGraphViz())
 }
