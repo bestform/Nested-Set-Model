@@ -90,7 +90,7 @@ func main() {
 	suits := clothing.appendNew("Men's").appendNew("Suits")
 	suits.appendNew("Slacks")
 	suits.appendNew("Jackets")
-	womens := clothing.appendNew("Womens's")
+	womens := clothing.appendNew("Women's")
 	dresses := womens.appendNew("Dresses")
 	dresses.appendNew("Evening Growns")
 	dresses.appendNew("Sun Dresses")
