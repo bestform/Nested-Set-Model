@@ -43,7 +43,7 @@ func (n *Node) appendNew(name string) *Node {
 func (n Node) String() string {
 	output := n.SimpleString()
 	for _, child := range n.children {
-		output += child.SimpleString()
+		output += child.String()
 	}
 
 	return output
